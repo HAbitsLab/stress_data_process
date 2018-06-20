@@ -57,7 +57,7 @@ for i=startpos+1:length(durations)
             end
         else
             
-            if abs(durations(i)-RRk)<=1.8*CBD
+            if abs(durations(i)-RRk)<=1.5*CBD
                 isvalid(i)=1;
                 RRk=durations(i);
             else

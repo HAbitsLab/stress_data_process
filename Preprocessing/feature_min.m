@@ -18,9 +18,18 @@ function [subdur1]= feature_min()
 % duration=[];
 % num_min=[];
     subject1 = csvread('noise.csv');
-    [ecg1,predicts1] = clean_ecg(svm,net,threshold,subject1,fs, baseecg);   
+
+    [ecg1,predicts1] = clean_ecg(svm,net,threshold,subject1,fs, baseecg);  
+    i1 = find(ecg1, 1, 'first');
+    if i1 > 1
+        ecg1(1:i1) = [];
+    end
+
     subdur1= dur_clean(predicts1,ecg1,fs);
-    subdur1(isnan(subdur1))=[];
+    subdur1(isnan(subdur1))=0;
+    if length(subdur1) < 10
+        subdur1 = [subdur1 0 0 0 0 0 0 0];
+    end
 end
 % num_dur=[num_dur length(subdur1)];
 % participant = 'participant22';
@@ -177,10 +186,13 @@ function duration= dur_clean(predicts,ecg,fs)
     
     duration=duration*1000/fs;
     len1=length(duration);
-    
-    isvalid= CBD4(duration, ones(1,length(duration)),fs); % heart rate cal: keep position. Do not need to keep position here.
-    duration= duration.*isvalid;
-    duration(duration==0)=NaN;
+    if isempty(duration)
+        duration = [237];
+    else
+        isvalid= CBD4(duration, ones(1,length(duration)),fs); % heart rate cal: keep position. Do not need to keep position here.
+        duration= duration.*isvalid;
+        duration(duration==0)=NaN;
+    end
     
 end
 
