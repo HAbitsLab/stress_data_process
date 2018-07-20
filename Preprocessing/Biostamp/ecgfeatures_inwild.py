@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
 """
-Created on Sat Jun 09 00:28:26 2018
+Created on Mon Jun 25 10:51:59 2018
 
 @author: zdking
 """
 
+import os
 import pandas as pd
 import matlab.engine
 import csv
@@ -115,31 +116,25 @@ def getfeatures(data):
              iqr,countgeq,countleq,rang,COV_M,pNN50,pNN20,RMSSD,nn50,nn20,SDSD,zcross, Lf, MF, HF, Lf/HF, Count]
  
 eng = matlab.engine.start_matlab()
-with open('featuresnew.csv', 'wb') as ec:
+with open('featurespart101.csv', 'wb') as ec:
     writerec = csv.writer(ec)
-    writerec.writerow(['Participant', 'Activity','window','mean','standar deviation','min','max','median','mode','skew'
+    writerec.writerow(['Participant', 'day','window','mean','standar deviation','min','max','median','mode','skew'
                        ,'Kurtosis','80_percentile','60_percentile','40_percentile','20_percentile','RMS'
                        ,'IQR','count>mean','count<mean','range','COV_M','pNN50','pNN20','RMSSD','nn50'
                        ,'nn20','SDSD','zcross', 'Lf', 'MF', 'HF', 'Lf/HF', 'Count'])
-    for part in [2,3,4,6,7,9,11,13,14,15,16,17,20,21,22]:
+    for part in os.listdir('../In_Wild/'):
         print part
-        ecgfilename = 'stress_data/participant' + str(part) +'/elec.csv'
-        anfilename = 'stress_data/participant' + str(part) +'/annotations.csv'
-        ecg = pd.read_csv(ecgfilename)
-#    Timestamp (ms)	Sample (V)
-        an = pd.read_csv(anfilename)
-#        EventType	Start Timestamp (ms)	Stop Timestamp (ms)
-        for index, row in an.iterrows():
-            startact = row['Start Timestamp (ms)']
-            endact = row['Stop Timestamp (ms)']
-            activity = row['EventType']
-            plt.figure()
-            plt.plot(ecg.loc[(ecg['Timestamp (ms)'] >= startact) & (ecg['Timestamp (ms)'] <= endact)]['Sample (V)'])
-            plt.savefig('stress_data/participant' + str(part) +'/'+activity+'.png')
-            start = startact
+        for day in os.listdir('../In_Wild/'+str(part) +'/'):
+            ecgfilename = '../In_Wild/'+str(part) +'/' + day + '/elec.csv'
+            print day
+            ecg = pd.read_csv(ecgfilename)
+    #    Timestamp (ms)	Sample (V)
+            Time = ecg['Timestamp (ms)']
+            start = Time[0]
+            endact = Time[len(Time)-1]
             window = 1
             end = start + 60000
-            while start <= endact-20000:
+            while start <= endact-30000:
                 actecg = ecg.loc[(ecg['Timestamp (ms)'] >= start) & (ecg['Timestamp (ms)'] <= end)]
                 x = list(actecg['Sample (V)'])
                 with open('noise.csv', 'wb') as f:
@@ -152,7 +147,7 @@ with open('featuresnew.csv', 'wb') as ec:
                 test = y[np.where(y>0)]
                 if len(test) > 10:
                     feat = getfeatures(y)
-                    ret = [part,activity,window]
+                    ret = [part,start,window]
                     ret = ret + feat
                     writerec.writerow(ret)
                 window += 1

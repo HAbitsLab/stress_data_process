@@ -1,4 +1,4 @@
-function [subdur1]= feature_min(subject)
+function [subdur1]= feature_min()
 
 %% classifier
 
@@ -17,8 +17,7 @@ function [subdur1]= feature_min(subject)
 % feature=[];
 % duration=[];
 % num_min=[];
-    subject1 = transpose(subject)
-    subject2 = csvread('noise.csv');
+    subject1 = csvread('noise.csv');
 
     [ecg1,predicts1] = clean_ecg(svm,net,threshold,subject1,fs, baseecg);  
     i1 = find(ecg1, 1, 'first');
