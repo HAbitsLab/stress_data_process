@@ -1,4 +1,5 @@
 function [ isvalid ] = CBD4( durations, qrs_valid,fs )
+fs = 125
 durations=durations./1000;
 if mean(durations>10)
     durations=durations./fs;
@@ -10,7 +11,7 @@ IQ= prctile(dur_valid,75)- prctile(dur_valid,25);
 
 % sortperiod = sort(dur_valid);
 % quartile=ceil(length(dur_valid)/4);
-% IQ= sortperiod(quartile*3)-sortperiod(quartile);
+% IQ= sortperiod(quartile*3)-sortperiod(squartile);
 
 QD= IQ*0.5;
 % QD=sortperiod(quartile*3)-(sortperiod(quartile)/2);

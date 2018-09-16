@@ -151,6 +151,10 @@ function [data]= getNNdata(ecg, fs, windownum, dim)
         peaks2= -findpeaks(-ecgsub);
         peaks= [peaks1; peaks2];
         plen= length(peaks);
+        if(plen > 36);
+            peaks = peaks(1:36);
+            plen = 36;
+        end
         addone(1:plen)=peaks;
         addone=sort(addone);
         data=[data; addone];

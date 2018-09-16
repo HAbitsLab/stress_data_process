@@ -77,8 +77,7 @@ def zeroCross(data):
          i += 1 
     return cnt
 
-def getFeatures(data, start, end):
-     temp = data
+def getFeatures(data):
      data = data[np.where(data>0)]
      minFloat = np.amin(data,axis = 0)
      maxFloat = np.amax(data,axis = 0)
@@ -101,25 +100,13 @@ def getFeatures(data, start, end):
      COV_MFloat = np.cov(data.T)
      zcrossInt = zeroCross(data)
      
-     difArr = diffRR(temp)
-     pNN50Float = len(difArr[(np.where(difArr>50))])/float(len(data))
-     pNN20Float = len(difArr[(np.where(difArr>20))])/float(len(data))
-     RMSSDFloat = math.sqrt(np.mean(difArr*difArr))
-     nn50Int = len(difArr[(np.where(difArr>50))])
-     nn20Int = len(difArr[(np.where(difArr>20))])
-     SDSDFloat =  np.std(difArr,axis = 0)
-     if HFFloat == 0:
-         freqRatio = 0
-     else:
-         freqRatio = LfFloat/HFFloat
+     
      #HR = convertHR(data)
-     expHR = float(end - start)/ meanFloat
-     CountInt = float(len(data))/ expHR
-     return [meanFloat,sdFloat,minFloat,maxFloat,medianFloat,modeFloat[0][0],skewFloat,
+     CountInt = len(data)
+     return [meanFloat,sdFloat,minFloat,maxFloat,medianFloat,modeFloat,skewFloat,
              kurFloat,eightperFloat,sixperFloat,fourperFloat,twoperFloat,rmsFloat,
-             iqrFloat,countgeqInt,countleqInt,rangFloat,COV_MFloat,pNN50Float,
-             pNN20Float,RMSSDFloat,nn50Int,nn20Int,SDSDFloat,zcrossInt, LfFloat,
-             MFFloat, HFFloat, freqRatio,CountInt]
+             iqrFloat,countgeqInt,countleqInt,rangFloat,COV_MFloat,zcrossInt, LfFloat,
+             MFFloat, HFFloat, LfFloat/HFFloat, CountInt]
  
 #eng = matlab.engine.start_matlab()
 #with open('featuresnew.csv', 'wb') as ec:
